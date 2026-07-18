@@ -19,7 +19,9 @@ class HomeScreen extends StatelessWidget {
           Container(
             width: 320,
             color: Colors.white,
-            child: const Center(child: const Expanded(child: EntryList())),
+            child: const Center(child: const Expanded(
+              child: EntriesPane(),
+            )),
           ),
 
           Expanded(
