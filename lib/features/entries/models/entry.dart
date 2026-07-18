@@ -21,4 +21,24 @@ class Entry {
   final bool isNew;
 
   bool get isComplete => meaning != null && example != null;
+
+  Entry copyWith({
+    String? id,
+    String? bookId,
+    String? word,
+    String? meaning,
+    String? example,
+    String? notes,
+    bool? isNew,
+  }) {
+    return Entry(
+      id: id ?? this.id,
+      bookId: bookId ?? this.bookId,
+      word: word ?? this.word,
+      meaning: meaning ?? this.meaning,
+      example: example ?? this.example,
+      notes: notes ?? this.notes,
+      isNew: isNew ?? this.isNew,
+    );
+  }
 }

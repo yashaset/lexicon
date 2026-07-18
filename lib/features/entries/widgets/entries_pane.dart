@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lexicon/features/entries/widgets/new_entry_input.dart';
 
 import '../../../shared/widgets/section_title.dart';
 import 'entry_list.dart';
@@ -26,32 +27,36 @@ class _EntriesPaneState extends State<EntriesPane> {
           ),
         ),
 
-        const Expanded(
-          child: EntryList(),
-        ),
+        const Expanded(child: EntryList()),
 
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 180),
           child: isCreatingEntry
               ? Padding(
-            key: const ValueKey('input'),
-            padding: const EdgeInsets.all(16),
-            child: const SizedBox.shrink(),
-          )
+                  key: const ValueKey('input'),
+                  padding: const EdgeInsets.all(16),
+                  child: NewEntryInput(
+                    onFinished: () {
+                      setState(() {
+                        isCreatingEntry = false;
+                      });
+                    },
+                  ),
+                )
               : Padding(
-            key: const ValueKey('button'),
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              child: NewEntryButton(
-                onPressed: () {
-                  setState(() {
-                    isCreatingEntry = true;
-                  });
-                },
-              ),
-            ),
-          ),
+                  key: const ValueKey('button'),
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: NewEntryButton(
+                      onPressed: () {
+                        setState(() {
+                          isCreatingEntry = true;
+                        });
+                      },
+                    ),
+                  ),
+                ),
         ),
       ],
     );

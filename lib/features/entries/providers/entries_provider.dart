@@ -12,9 +12,19 @@ class EntriesNotifier extends Notifier<EntriesState> {
     );
   }
 
-  void addEntry(Entry entry) {
+  void addEntry({
+    required String bookId,
+    required String word,
+  }) {
+    final entry = Entry(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      bookId: bookId,
+      word: word,
+    );
+
     state = state.copyWith(
       entries: [...state.entries, entry],
+      selectedEntryId: entry.id,
     );
   }
 
