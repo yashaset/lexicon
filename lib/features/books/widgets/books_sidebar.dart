@@ -35,12 +35,38 @@ class _BooksSidebarState extends State<BooksSidebar> {
 
           const Expanded(child: BookList()),
 
+          // AnimatedSwitcher(
+          //   duration: const Duration(milliseconds: 180),
+          //   child: isCreatingBook
+          //       ? Padding(
+          //           key: const ValueKey('input'),
+          //           padding: const EdgeInsets.all(16),
+          //           child: NewBookInput(
+          //             onFinished: () {
+          //               setState(() {
+          //                 isCreatingBook = false;
+          //               });
+          //             },
+          //           ),
+          //         )
+          //       : Padding(
+          //           key: const ValueKey('button'),
+          //           padding: const EdgeInsets.all(16),
+          //           child: SizedBox(
+          //             width: double.infinity,
+          //             child: NewBookButton(),
+          //           ),
+          //         ),
+          // ),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 180),
+
             child: isCreatingBook
                 ? Padding(
                     key: const ValueKey('input'),
+
                     padding: const EdgeInsets.all(16),
+
                     child: NewBookInput(
                       onFinished: () {
                         setState(() {
@@ -51,10 +77,19 @@ class _BooksSidebarState extends State<BooksSidebar> {
                   )
                 : Padding(
                     key: const ValueKey('button'),
+
                     padding: const EdgeInsets.all(16),
+
                     child: SizedBox(
                       width: double.infinity,
-                      child: NewBookButton(),
+
+                      child: NewBookButton(
+                        onPressed: () {
+                          setState(() {
+                            isCreatingBook = true;
+                          });
+                        },
+                      ),
                     ),
                   ),
           ),

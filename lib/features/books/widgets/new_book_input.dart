@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/books_provider.dart';
 
 class NewBookInput extends ConsumerStatefulWidget {
-  const NewBookInput({super.key, required this.onFinished});
+  const NewBookInput({
+    super.key,
+    required this.onFinished,
+  });
 
   final VoidCallback onFinished;
 
@@ -13,25 +16,36 @@ class NewBookInput extends ConsumerStatefulWidget {
 }
 
 class _NewBookInputState extends ConsumerState<NewBookInput> {
-  final controller = TextEditingController();
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+    _focusNode = FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
-  void save() {
-    final title = controller.text.trim();
+  void _save() {
+    final title = _controller.text.trim();
 
-    if (title.isEmpty) return;
+    if (title.isEmpty) {
+      widget.onFinished();
+      return;
+    }
 
     ref.read(booksProvider.notifier).addBook(title);
-
-    controller.clear();
-    ref.read(booksProvider.notifier).addBook(title);
-
-    controller.clear();
 
     widget.onFinished();
   }
@@ -39,11 +53,13 @@ class _NewBookInputState extends ConsumerState<NewBookInput> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      autofocus: true,
-      onEditingComplete: widget.onFinished,
-      decoration: const InputDecoration(hintText: 'Book name'),
-      onSubmitted: (_) => save(),
+      controller: _controller,
+      focusNode: _focusNode,
+      decoration: const InputDecoration(
+        hintText: 'Book name...',
+      ),
+      textInputAction: TextInputAction.done,
+      onSubmitted: (_) => _save(),
     );
   }
 }
