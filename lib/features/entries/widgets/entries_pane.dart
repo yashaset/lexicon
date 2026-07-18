@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/section_title.dart';
 import 'entry_list.dart';
 import 'new_entry_button.dart';
-import 'new_entry_input.dart';
 
 class EntriesPane extends StatefulWidget {
   const EntriesPane({super.key});
@@ -37,13 +36,7 @@ class _EntriesPaneState extends State<EntriesPane> {
               ? Padding(
             key: const ValueKey('input'),
             padding: const EdgeInsets.all(16),
-            child: NewEntryInput(
-              onFinished: () {
-                setState(() {
-                  isCreatingEntry = false;
-                });
-              },
-            ),
+            child: const SizedBox.shrink(),
           )
               : Padding(
             key: const ValueKey('button'),

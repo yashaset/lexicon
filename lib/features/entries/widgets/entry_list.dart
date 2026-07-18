@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../providers/entries_provider.dart';
+import '../providers/filtered_entries_provider.dart';
 import 'entry_tile.dart';
 
 
@@ -10,7 +9,8 @@ class EntryList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entries = ref.watch(entriesProvider);
+    final entries =
+    ref.watch(filteredEntriesProvider);
 
     if (entries.isEmpty) {
       return const Center(

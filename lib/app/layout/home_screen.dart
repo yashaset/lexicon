@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lexicon/features/books/widgets/books_sidebar.dart';
-import 'package:lexicon/features/entries/widgets/entry_list.dart';
-
+import 'package:lexicon/features/entries/widgets/entries_pane.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 

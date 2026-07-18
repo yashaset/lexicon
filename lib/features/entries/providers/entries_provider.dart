@@ -1,14 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../books/providers/books_provider.dart';
 import '../models/dummy_entries.dart';
+import '../models/entries_state.dart';
+import '../models/entry.dart';
 
-final entriesProvider = Provider((ref) {
-  final booksState = ref.watch(booksProvider);
+class EntriesNotifier extends Notifier<EntriesState> {
+  @override
+  EntriesState build() {
+    return EntriesState(
+      entries: List.of(dummyEntries),
+    );
+  }
 
-  final selectedId = booksState.selectedBookId;
+  void addEntry(Entry entry) {
+    state = state.copyWith(
+      entries: [...state.entries, entry],
+    );
+  }
 
-  return dummyEntries
-      .where((entry) => entry.bookId == selectedId)
-      .toList();
-});
+  void selectEntry(String id) {
+    state = state.copyWith(
+      selectedEntryId: id,
+    );
+  }
+}
+
+final entriesProvider =
+NotifierProvider<EntriesNotifier, EntriesState>(
+  EntriesNotifier.new,
+);
