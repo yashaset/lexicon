@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'layout/shell.dart';
+import 'layout/home_screen.dart';
 import 'theme/app_theme.dart';
 
 class LexiconApp extends StatelessWidget {
@@ -12,7 +11,7 @@ class LexiconApp extends StatelessWidget {
       title: 'Lexicon',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const Shell(),
+      home: const HomeScreen(),
     );
   }
 }

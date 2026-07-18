@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lexicon/features/books/views/books_view.dart';
+import 'package:lexicon/features/books/widgets/books_sidebar.dart';
 
-class Shell extends StatelessWidget {
-  const Shell({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class Shell extends StatelessWidget {
             width: 260,
             color: const Color(0xffE8E1D6),
             child: const Center(
-              child: const BooksView(),
+              child: const BooksSidebar(),
             ),
           ),
 

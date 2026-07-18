@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/dummy_books.dart';
 import '../widgets/book_tile.dart';
 
-class BooksView extends StatelessWidget {
-  const BooksView({super.key});
+class BookList extends StatelessWidget {
+  const BookList({super.key});
 
   @override
   Widget build(BuildContext context) {
