@@ -20,7 +20,11 @@ class Entry {
 
   final bool isNew;
 
-  bool get isComplete => meaning != null && example != null;
+
+  bool get isComplete {
+    return (meaning?.trim().isNotEmpty ?? false) &&
+        (example?.trim().isNotEmpty ?? false);
+  }
 
   Entry copyWith({
     String? id,
