@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lexicon/features/books/views/books_view.dart';
 
 class Shell extends StatelessWidget {
   const Shell({super.key});
@@ -9,10 +10,10 @@ class Shell extends StatelessWidget {
       body: Row(
         children: [
           Container(
-            width: 240,
+            width: 260,
             color: const Color(0xffE8E1D6),
             child: const Center(
-              child: Text("Books"),
+              child: const BooksView(),
             ),
           ),
 
