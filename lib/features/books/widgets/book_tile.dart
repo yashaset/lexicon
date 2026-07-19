@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lexicon/app/theme/app_colors.dart';
 
 import '../models/book.dart';
 import 'book_tile_container.dart';
@@ -9,15 +10,11 @@ class BookTile extends StatelessWidget {
     required this.book,
     this.selected = false,
     this.onTap,
-    this.onRename,
-    this.onDelete,
   });
 
   final Book book;
   final bool selected;
   final VoidCallback? onTap;
-  final VoidCallback? onRename;
-  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +58,7 @@ class BookTile extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.secondaryContainer,
+                    color: AppColors.accentLight,
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -71,36 +68,7 @@ class BookTile extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(width: 4),
-
-                MenuAnchor(
-                  menuChildren: [
-                    MenuItemButton(
-                      onPressed: onRename,
-                      child: const Text('Rename'),
-                    ),
-                    const Divider(height: 1),
-                    MenuItemButton(
-                      onPressed: onDelete,
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                  builder: (context, controller, child) {
-                    return IconButton(
-                      icon: const Icon(Icons.more_horiz_rounded, size: 18),
-                      visualDensity: VisualDensity.compact,
-                      splashRadius: 16,
-                      onPressed: () {
-                        if (controller.isOpen) {
-                          controller.close();
-                        } else {
-                          controller.open();
-                        }
-                      },
-                    );
-                  },
-                ),
               ],
             ),
           ),

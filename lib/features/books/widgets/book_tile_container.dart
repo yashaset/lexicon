@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lexicon/app/theme/app_colors.dart';
 
 class BookTileContainer extends StatelessWidget {
   const BookTileContainer({
@@ -20,7 +21,7 @@ class BookTileContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Material(
         color: selected
-            ? theme.colorScheme.secondaryContainer.withValues(alpha: 0.45)
+            ? AppColors.accentLight
             : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(

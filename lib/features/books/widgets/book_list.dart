@@ -98,12 +98,6 @@ class BookList extends ConsumerWidget {
                 onTap: () {
                   ref.read(booksProvider.notifier).selectBook(book.id);
                 },
-                onRename: () {
-                  ref.read(bookRenameProvider.notifier).start(book.id);
-                },
-                onDelete: () {
-                  // We'll implement this next.
-                },
               ),
             );
           },
