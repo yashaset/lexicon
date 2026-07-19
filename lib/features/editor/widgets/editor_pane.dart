@@ -13,6 +13,7 @@ class EditorPane extends ConsumerStatefulWidget {
 
 class _EditorPaneState extends ConsumerState<EditorPane> {
   final _wordController = TextEditingController();
+  final _wordFocusNode = FocusNode();
   final _meaningController = TextEditingController();
   final _exampleController = TextEditingController();
   final _notesController = TextEditingController();
@@ -22,6 +23,7 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
   @override
   void dispose() {
     _wordController.dispose();
+    _wordFocusNode.dispose();
     _meaningController.dispose();
     _exampleController.dispose();
     _notesController.dispose();
@@ -33,31 +35,29 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
 
     _wordController.value = TextEditingValue(
       text: entry.word,
-      selection: TextSelection.collapsed(
-        offset: entry.word.length,
-      ),
+      selection: TextSelection.collapsed(offset: entry.word.length),
     );
 
     _meaningController.value = TextEditingValue(
       text: entry.meaning ?? '',
-      selection: TextSelection.collapsed(
-        offset: (entry.meaning ?? '').length,
-      ),
+      selection: TextSelection.collapsed(offset: (entry.meaning ?? '').length),
     );
 
     _exampleController.value = TextEditingValue(
       text: entry.example ?? '',
-      selection: TextSelection.collapsed(
-        offset: (entry.example ?? '').length,
-      ),
+      selection: TextSelection.collapsed(offset: (entry.example ?? '').length),
     );
 
     _notesController.value = TextEditingValue(
       text: entry.notes ?? '',
-      selection: TextSelection.collapsed(
-        offset: (entry.notes ?? '').length,
-      ),
+      selection: TextSelection.collapsed(offset: (entry.notes ?? '').length),
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _wordFocusNode.requestFocus();
+      }
+    });
   }
 
   @override
@@ -82,51 +82,68 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildField(
-            label: 'Word',
-            controller: _wordController,
-            onChanged: (value) {
-              notifier.updateWord(entry.id, value);
-            },
+      padding: const EdgeInsets.all(40),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 760),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _wordController,
+                focusNode: _wordFocusNode,
+                onChanged: (value) {
+                  notifier.updateWord(entry.id, value);
+                },
+                decoration: const InputDecoration(
+                  hintText: 'New Word',
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  height: 1.2,
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              _buildField(
+                label: 'Meaning',
+                controller: _meaningController,
+                maxLines: 4,
+                onChanged: (value) {
+                  notifier.updateMeaning(entry.id, value);
+                },
+              ),
+
+              const SizedBox(height: 24),
+
+              _buildField(
+                label: 'Example',
+                controller: _exampleController,
+                maxLines: 3,
+                onChanged: (value) {
+                  notifier.updateExample(entry.id, value);
+                },
+              ),
+
+              const SizedBox(height: 24),
+
+              _buildField(
+                label: 'Notes',
+                controller: _notesController,
+                maxLines: 8,
+                onChanged: (value) {
+                  notifier.updateNotes(entry.id, value);
+                },
+              ),
+            ],
           ),
-
-          const SizedBox(height: 24),
-
-          _buildField(
-            label: 'Meaning',
-            controller: _meaningController,
-            maxLines: 3,
-            onChanged: (value) {
-              notifier.updateMeaning(entry.id, value);
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          _buildField(
-            label: 'Example',
-            controller: _exampleController,
-            maxLines: 3,
-            onChanged: (value) {
-              notifier.updateExample(entry.id, value);
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          _buildField(
-            label: 'Notes',
-            controller: _notesController,
-            maxLines: 6,
-            onChanged: (value) {
-              notifier.updateNotes(entry.id, value);
-            },
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -137,21 +154,46 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
     required ValueChanged<String> onChanged,
     int maxLines = 1,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          maxLines: maxLines,
-          onChanged: onChanged,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-        ),
-      ],
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.2,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          TextField(
+            controller: controller,
+            onChanged: onChanged,
+            maxLines: maxLines,
+            decoration: const InputDecoration(
+              hintText: 'Start typing...',
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+            style: theme.textTheme.bodyLarge,
+          ),
+
+          const SizedBox(height: 16),
+
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: theme.dividerColor.withValues(alpha: 0.35),
+          ),
+        ],
+      ),
     );
   }
 }

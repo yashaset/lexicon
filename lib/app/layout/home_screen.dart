@@ -14,19 +14,19 @@ class HomeScreen extends StatelessWidget {
           Container(
             width: 260,
             color: const Color(0xffE8E1D6),
-            child: const Center(child: const BooksSidebar()),
+            child: const BooksSidebar(),
           ),
 
           Container(
             width: 320,
             color: Colors.white,
-            child: const Center(child: const Expanded(child: EntriesPane())),
+            child: const EntriesPane(),
           ),
 
           Expanded(
             child: Container(
               color: const Color(0xffF8F6F2),
-              child: const Center(child: const Expanded(child: EditorPane())),
+              child: const EditorPane(),
             ),
           ),
         ],
