@@ -1,15 +1,37 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/database/database_provider.dart';
 import '../models/book.dart';
 import '../models/books_state.dart';
-import '../models/dummy_books.dart';
 
 class BooksNotifier extends Notifier<BooksState> {
   @override
   BooksState build() {
-    return BooksState(
-      books: List.of(dummyBooks),
-      selectedBookId: dummyBooks.isNotEmpty ? dummyBooks.first.id : null,
+    _loadBooks();
+
+    return const BooksState(
+      books: [],
+      selectedBookId: null,
+    );
+  }
+
+  Future<void> _loadBooks() async {
+    final db = ref.read(databaseProvider);
+
+    final rows = await db.getBooks();
+
+    final books = rows
+        .map(
+          (b) => Book(
+        id: b.id.toString(),
+        title: b.title,
+      ),
+    )
+        .toList();
+
+    state = state.copyWith(
+      books: books,
+      selectedBookId: books.isEmpty ? null : books.first.id,
     );
   }
 
@@ -19,22 +41,18 @@ class BooksNotifier extends Notifier<BooksState> {
     );
   }
 
-  void addBook(String title) {
-    final book = Book(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
-    );
+  Future<void> addBook(String title) async {
+    final db = ref.read(databaseProvider);
+
+    final id = await db.createBook(title);
+
+    await _loadBooks();
 
     state = state.copyWith(
-      books: [
-        ...state.books,
-        book,
-      ],
-      selectedBookId: book.id,
+      selectedBookId: id.toString(),
     );
   }
 }
 
-final booksProvider = NotifierProvider<BooksNotifier, BooksState>(
-  BooksNotifier.new,
-);
+final booksProvider =
+NotifierProvider<BooksNotifier, BooksState>(BooksNotifier.new);

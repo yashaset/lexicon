@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/books_provider.dart';
+import 'book_tile_container.dart';
 
 class NewBookInput extends ConsumerStatefulWidget {
   const NewBookInput({super.key, required this.onFinished});
@@ -34,7 +35,13 @@ class _NewBookInputState extends ConsumerState<NewBookInput> {
     super.dispose();
   }
 
+  bool _isSaving = false;
+
   void _save() {
+    if (_isSaving) return;
+
+    _isSaving = true;
+
     final title = _controller.text.trim();
 
     if (title.isEmpty) {
@@ -49,23 +56,40 @@ class _NewBookInputState extends ConsumerState<NewBookInput> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      focusNode: _focusNode,
-      autofocus: true,
-      style: Theme.of(
-        context,
-      ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
-      decoration: const InputDecoration(
-        hintText: 'Untitled Book',
-        border: InputBorder.none,
-        isDense: true,
-        contentPadding: EdgeInsets.zero,
+    final theme = Theme.of(context);
+
+    return BookTileContainer(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.menu_book_outlined,
+            size: 18,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              autofocus: true,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              decoration: const InputDecoration(
+                hintText: "Untitled Book",
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _save(),
+              onEditingComplete: _save,
+              onTapOutside: (_) => _save(),
+            ),
+          ),
+        ],
       ),
-      textInputAction: TextInputAction.done,
-      onSubmitted: (_) => _save(),
-      onEditingComplete: _save,
-      onTapOutside: (_) => _save(),
     );
   }
 }

@@ -70,10 +70,31 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
     if (entry == null) {
       _currentEntryId = null;
 
-      return const Center(
-        child: Text(
-          'Select an entry to start editing.',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.menu_book_outlined,
+              size: 56,
+              color: Theme.of(context).colorScheme.outline,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'No word selected',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Choose a word from the list\nor press ⌘N to create one.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -84,7 +105,7 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(40),
+      padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 48),
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
@@ -98,8 +119,8 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
                 autofocus: true,
                 hintText: 'Word',
                 textStyle: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 36,
+                  fontWeight: FontWeight.w800,
                 ),
                 onChanged: (value) {
                   ref
