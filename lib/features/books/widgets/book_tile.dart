@@ -9,11 +9,15 @@ class BookTile extends StatelessWidget {
     required this.book,
     this.selected = false,
     this.onTap,
+    this.onRename,
+    this.onDelete,
   });
 
   final Book book;
   final bool selected;
   final VoidCallback? onTap;
+  final VoidCallback? onRename;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +40,66 @@ class BookTile extends StatelessWidget {
           const SizedBox(width: 12),
 
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  book.title,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    book.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
 
-                const SizedBox(height: 4),
+                const SizedBox(width: 8),
 
-                Text(
-                  "${book.entryCount} entries",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade600,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
                   ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    '${book.entryCount}',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 4),
+
+                MenuAnchor(
+                  menuChildren: [
+                    MenuItemButton(
+                      onPressed: onRename,
+                      child: const Text('Rename'),
+                    ),
+                    const Divider(height: 1),
+                    MenuItemButton(
+                      onPressed: onDelete,
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                  builder: (context, controller, child) {
+                    return IconButton(
+                      icon: const Icon(Icons.more_horiz_rounded, size: 18),
+                      visualDensity: VisualDensity.compact,
+                      splashRadius: 16,
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                    );
+                  },
                 ),
               ],
             ),

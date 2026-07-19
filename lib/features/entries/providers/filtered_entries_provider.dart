@@ -26,8 +26,5 @@ final filteredEntriesProvider = Provider<List<Entry>>((ref) {
           (entry.meaning?.toLowerCase().contains(query) ?? false);
     });
   }
-  print('Query: $query');
-
-  print('Filtered: ${entries.length}');
   return entries.toList();
 });

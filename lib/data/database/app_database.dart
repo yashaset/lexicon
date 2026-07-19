@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:lexicon/data/database/book_with_count.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -17,8 +18,23 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  Future<List<Book>> getBooks() {
-    return select(books).get();
+  Future<List<BookWithCount>> getBooks() async {
+    final allBooks = await select(books).get();
+
+    final result = <BookWithCount>[];
+
+    for (final book in allBooks) {
+      final count =
+          await (select(entries)..where((e) => e.bookId.equals(book.id)))
+              .get()
+              .then((rows) => rows.length);
+
+      result.add(
+        BookWithCount(id: book.id, title: book.title, entryCount: count),
+      );
+    }
+
+    return result;
   }
 
   Future<int> createBook(String title) {
@@ -31,8 +47,10 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<void> deleteBook(int id) {
-    return (delete(books)..where((b) => b.id.equals(id))).go();
+  Future<void> deleteBook(int id) async {
+    await (delete(entries)..where((e) => e.bookId.equals(id))).go();
+
+    await (delete(books)..where((b) => b.id.equals(id))).go();
   }
 
   Future<List<Entry>> getEntries(int bookId) {

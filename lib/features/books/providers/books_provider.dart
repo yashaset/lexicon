@@ -18,7 +18,13 @@ class BooksNotifier extends Notifier<BooksState> {
     final rows = await db.getBooks();
 
     final books = rows
-        .map((b) => Book(id: b.id.toString(), title: b.title))
+        .map(
+          (b) => Book(
+            id: b.id.toString(),
+            title: b.title,
+            entryCount: b.entryCount,
+          ),
+        )
         .toList();
 
     state = state.copyWith(
@@ -41,7 +47,7 @@ class BooksNotifier extends Notifier<BooksState> {
     state = state.copyWith(selectedBookId: id.toString());
   }
 
-  Future<void> renameBook(String id, String title) async {
+  Future<void> renameBook({required String id, required String title}) async {
     final db = ref.read(databaseProvider);
 
     await db.renameBook(int.parse(id), title);
@@ -56,7 +62,9 @@ class BooksNotifier extends Notifier<BooksState> {
 
     await _loadBooks();
 
-    if (!state.books.any((b) => b.id == state.selectedBookId)) {
+    final selected = state.selectedBookId;
+
+    if (selected == id) {
       state = state.copyWith(
         selectedBookId: state.books.isEmpty ? null : state.books.first.id,
       );

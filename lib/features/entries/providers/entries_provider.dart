@@ -42,10 +42,18 @@ class EntriesNotifier extends Notifier<EntriesState> {
         )
         .toList();
 
-    state = state.copyWith(
-      entries: entries,
-      selectedEntryId: entries.isEmpty ? null : entries.first.id,
-    );
+    final currentSelection = state.selectedEntryId;
+
+    String? selectedId;
+
+    if (currentSelection != null &&
+        entries.any((e) => e.id == currentSelection)) {
+      selectedId = currentSelection;
+    } else {
+      selectedId = entries.isEmpty ? null : entries.first.id;
+    }
+
+    state = state.copyWith(entries: entries, selectedEntryId: selectedId);
   }
 
   Future<void> addEntry({required String bookId, required String word}) async {
