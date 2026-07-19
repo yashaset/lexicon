@@ -27,14 +27,11 @@ class BookTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            Icons.menu_book_outlined,
-
-            size: 18,
-
-            color: theme.colorScheme.onSurfaceVariant,
+            Icons.bookmark_border_rounded,
+            size: 16, color: AppColors.textSecondary
           ),
 
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
 
           Expanded(
             child: Row(
@@ -45,27 +42,18 @@ class BookTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500
                     ),
                   ),
                 ),
 
                 const SizedBox(width: 8),
 
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.accentLight,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    '${book.entryCount}',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                Text(
+                  '${book.entryCount}',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(width: 4),

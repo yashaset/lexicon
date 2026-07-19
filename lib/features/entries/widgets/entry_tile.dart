@@ -86,7 +86,12 @@ class _EntryTileState extends ConsumerState<EntryTile> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: Colors.grey.shade600),
+                              ?.copyWith(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.grey.shade800,
+                                fontStyle: FontStyle.italic,
+                              ),
                         ),
                       ],
                     ),

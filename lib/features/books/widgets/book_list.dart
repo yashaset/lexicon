@@ -22,7 +22,7 @@ class BookList extends ConsumerWidget {
     final state = ref.watch(booksProvider);
     final renamingBookId = ref.watch(bookRenameProvider);
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: 12),
       itemCount: state.books.length + (isCreatingBook ? 1 : 0),
       itemBuilder: (context, index) {
         if (isCreatingBook && index == 0) {

@@ -109,7 +109,7 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 760),
+          constraints: const BoxConstraints(maxWidth: 620),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -117,10 +117,10 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
                 controller: _wordController,
                 focusNode: _wordFocusNode,
                 autofocus: true,
-                hintText: 'Word',
+                // hintText: 'Word',
                 textStyle: const TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
                 ),
                 onChanged: (value) {
                   ref

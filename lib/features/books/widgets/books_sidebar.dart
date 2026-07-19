@@ -15,41 +15,62 @@ class _BooksSidebarState extends State<BooksSidebar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 16),
+          const SizedBox(height: 28),
 
-          SectionTitle(
-            "Books",
-
-            trailing: IconButton(
-              onPressed: isCreatingBook
-                  ? null
-                  : () {
-                      setState(() {
-                        isCreatingBook = true;
-                      });
-                    },
-
-              icon: const Icon(Icons.add, size: 16),
-
-              tooltip: 'New Book',
-
-              visualDensity: VisualDensity.compact,
-
-              splashRadius: 16,
-
-              padding: EdgeInsets.zero,
-
-              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Lexicon',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+
+          const SizedBox(height: 24),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'BOOKS',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      letterSpacing: 1.4,
+                    ),
+                  ),
+                ),
+
+                IconButton(
+                  onPressed: isCreatingBook
+                      ? null
+                      : () {
+                    setState(() {
+                      isCreatingBook = true;
+                    });
+                  },
+                  icon: const Icon(Icons.add, size: 18),
+                  splashRadius: 18,
+                  tooltip: 'New Book',
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
 
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: SearchField(hintText: 'Search books...'),
+            child: SearchField(
+              hintText: 'Search books',
+            ),
           ),
 
           const SizedBox(height: 16),
@@ -57,7 +78,6 @@ class _BooksSidebarState extends State<BooksSidebar> {
           Expanded(
             child: BookList(
               isCreatingBook: isCreatingBook,
-
               onFinished: () {
                 setState(() {
                   isCreatingBook = false;

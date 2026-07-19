@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lexicon/app/theme/app_colors.dart';
 
 class BookTileContainer extends StatelessWidget {
   const BookTileContainer({
@@ -15,26 +14,28 @@ class BookTileContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       child: Material(
         color: selected
-            ? AppColors.accentLight
+            ? const Color(0xFFFFF2E8)
             : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
-          hoverColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha:
-            .35,
-          ),
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
           splashFactory: NoSplash.splashFactory,
           highlightColor: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            child: child,
+          hoverColor: const Color(0xFFF8F3ED),
+          child: SizedBox(
+            height: 42,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: child,
+              ),
+            ),
           ),
         ),
       ),
