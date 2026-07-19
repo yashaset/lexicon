@@ -34,6 +34,38 @@ class AppDatabase extends _$AppDatabase {
   Future<void> deleteBook(int id) {
     return (delete(books)..where((b) => b.id.equals(id))).go();
   }
+
+  Future<List<Entry>> getEntries(int bookId) {
+    return (select(entries)..where((e) => e.bookId.equals(bookId))).get();
+  }
+
+  Future<int> createEntry({required int bookId, required String word}) {
+    return into(
+      entries,
+    ).insert(EntriesCompanion.insert(bookId: bookId, word: word));
+  }
+
+  Future<void> updateEntry({
+    required int id,
+    String? word,
+    String? meaning,
+    String? example,
+    String? notes,
+  }) {
+    return (update(entries)..where((e) => e.id.equals(id))).write(
+      EntriesCompanion(
+        word: word == null ? const Value.absent() : Value(word),
+        meaning: meaning == null ? const Value.absent() : Value(meaning),
+        example: example == null ? const Value.absent() : Value(example),
+        notes: notes == null ? const Value.absent() : Value(notes),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  Future<void> deleteEntry(int id) {
+    return (delete(entries)..where((e) => e.id.equals(id))).go();
+  }
 }
 
 LazyDatabase _openConnection() {

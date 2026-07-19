@@ -9,10 +9,7 @@ class BooksNotifier extends Notifier<BooksState> {
   BooksState build() {
     _loadBooks();
 
-    return const BooksState(
-      books: [],
-      selectedBookId: null,
-    );
+    return const BooksState(books: [], selectedBookId: null);
   }
 
   Future<void> _loadBooks() async {
@@ -21,12 +18,7 @@ class BooksNotifier extends Notifier<BooksState> {
     final rows = await db.getBooks();
 
     final books = rows
-        .map(
-          (b) => Book(
-        id: b.id.toString(),
-        title: b.title,
-      ),
-    )
+        .map((b) => Book(id: b.id.toString(), title: b.title))
         .toList();
 
     state = state.copyWith(
@@ -36,9 +28,7 @@ class BooksNotifier extends Notifier<BooksState> {
   }
 
   void selectBook(String id) {
-    state = state.copyWith(
-      selectedBookId: id,
-    );
+    state = state.copyWith(selectedBookId: id);
   }
 
   Future<void> addBook(String title) async {
@@ -48,11 +38,32 @@ class BooksNotifier extends Notifier<BooksState> {
 
     await _loadBooks();
 
-    state = state.copyWith(
-      selectedBookId: id.toString(),
-    );
+    state = state.copyWith(selectedBookId: id.toString());
+  }
+
+  Future<void> renameBook(String id, String title) async {
+    final db = ref.read(databaseProvider);
+
+    await db.renameBook(int.parse(id), title);
+
+    await _loadBooks();
+  }
+
+  Future<void> deleteBook(String id) async {
+    final db = ref.read(databaseProvider);
+
+    await db.deleteBook(int.parse(id));
+
+    await _loadBooks();
+
+    if (!state.books.any((b) => b.id == state.selectedBookId)) {
+      state = state.copyWith(
+        selectedBookId: state.books.isEmpty ? null : state.books.first.id,
+      );
+    }
   }
 }
 
-final booksProvider =
-NotifierProvider<BooksNotifier, BooksState>(BooksNotifier.new);
+final booksProvider = NotifierProvider<BooksNotifier, BooksState>(
+  BooksNotifier.new,
+);

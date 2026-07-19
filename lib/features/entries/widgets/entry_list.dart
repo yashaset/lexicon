@@ -37,7 +37,7 @@ class _EntryListState extends ConsumerState<EntryList> {
 
     final searchQuery = ref.watch(searchQueryProvider);
 
-    if (entries.isEmpty) {
+    if (entries.isEmpty && !widget.isCreatingEntry) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

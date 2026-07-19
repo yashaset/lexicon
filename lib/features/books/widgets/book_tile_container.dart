@@ -20,11 +20,11 @@ class BookTileContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Material(
         color: selected
-            ? theme.colorScheme.secondaryContainer.withOpacity(0.45)
+            ? theme.colorScheme.secondaryContainer.withValues(alpha: 0.45)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          hoverColor: theme.colorScheme.surfaceContainerHighest.withOpacity(
+          hoverColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha:
             .35,
           ),
           splashFactory: NoSplash.splashFactory,
