@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'command.dart';
 import 'command_registry.dart';
 
 class CommandListController {
-  CommandListController({required this.context, required this.query});
+  CommandListController({
+    required this.context,
+    required this.ref,
+    required this.query,
+  });
 
   final BuildContext context;
+  final WidgetRef ref;
   final String query;
 
   List<Command> get commands {
     final q = query.trim().toLowerCase();
 
-    final allCommands = CommandRegistry.build(context);
+    final allCommands = CommandRegistry.build(context, ref);
 
     if (q.isEmpty) {
       return allCommands;

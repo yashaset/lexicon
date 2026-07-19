@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:lexicon/features/entries/widgets/entries_header.dart';
-import 'package:lexicon/features/entries/widgets/new_entry_input.dart';
+
+import '../providers/entry_creation_provider.dart';
 import 'entry_list.dart';
 import 'new_entry_button.dart';
+import 'new_entry_input.dart';
 
-class EntriesPane extends StatefulWidget {
+class EntriesPane extends ConsumerWidget {
   const EntriesPane({super.key});
 
   @override
-  State<EntriesPane> createState() => _EntriesPaneState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isCreatingEntry = ref.watch(entryCreationProvider);
 
-class _EntriesPaneState extends State<EntriesPane> {
-  bool isCreatingEntry = false;
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       children: [
         const Padding(
           padding: EdgeInsets.all(16),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child:  EntriesHeader(),
-          ),
+          child: Align(alignment: Alignment.centerLeft, child: EntriesHeader()),
         ),
 
         const Expanded(child: EntryList()),
@@ -36,9 +32,7 @@ class _EntriesPaneState extends State<EntriesPane> {
                   padding: const EdgeInsets.all(16),
                   child: NewEntryInput(
                     onFinished: () {
-                      setState(() {
-                        isCreatingEntry = false;
-                      });
+                      ref.read(entryCreationProvider.notifier).finish();
                     },
                   ),
                 )
@@ -49,9 +43,7 @@ class _EntriesPaneState extends State<EntriesPane> {
                     width: double.infinity,
                     child: NewEntryButton(
                       onPressed: () {
-                        setState(() {
-                          isCreatingEntry = true;
-                        });
+                        ref.read(entryCreationProvider.notifier).start();
                       },
                     ),
                   ),

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lexicon/features/entries/providers/new_entry_focus_provider.dart';
 
 import '../../books/providers/books_provider.dart';
 import '../providers/entries_provider.dart';
 
 class NewEntryInput extends ConsumerStatefulWidget {
-  const NewEntryInput({
-    super.key,
-    required this.onFinished,
-  });
+  const NewEntryInput({super.key, required this.onFinished});
 
   final VoidCallback onFinished;
 
@@ -26,6 +24,10 @@ class _NewEntryInputState extends ConsumerState<NewEntryInput> {
 
     _controller = TextEditingController();
     _focusNode = FocusNode();
+
+    ref.listenManual<int>(newEntryFocusProvider, (_, __) {
+      _focusNode.requestFocus();
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
@@ -47,18 +49,16 @@ class _NewEntryInputState extends ConsumerState<NewEntryInput> {
       return;
     }
 
-    final selectedBookId =
-        ref.read(booksProvider).selectedBookId;
+    final selectedBookId = ref.read(booksProvider).selectedBookId;
 
     if (selectedBookId == null) {
       widget.onFinished();
       return;
     }
 
-    ref.read(entriesProvider.notifier).addEntry(
-      bookId: selectedBookId,
-      word: word,
-    );
+    ref
+        .read(entriesProvider.notifier)
+        .addEntry(bookId: selectedBookId, word: word);
 
     widget.onFinished();
   }
@@ -68,9 +68,7 @@ class _NewEntryInputState extends ConsumerState<NewEntryInput> {
     return TextField(
       controller: _controller,
       focusNode: _focusNode,
-      decoration: const InputDecoration(
-        hintText: 'German word...',
-      ),
+      decoration: const InputDecoration(hintText: 'German word...'),
       textInputAction: TextInputAction.done,
       onSubmitted: (_) => _save(),
     );

@@ -14,6 +14,9 @@ class CommandList extends ConsumerWidget {
 
     final controller = CommandListController(
       context: context,
+
+      ref: ref,
+
       query: state.query,
     );
 

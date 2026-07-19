@@ -9,10 +9,7 @@ import 'widgets/command_list.dart';
 import 'widgets/command_palette_search_field.dart';
 
 class CommandPaletteOverlay extends ConsumerStatefulWidget {
-  const CommandPaletteOverlay({
-    super.key,
-    required this.child,
-  });
+  const CommandPaletteOverlay({super.key, required this.child});
 
   final Widget child;
 
@@ -21,8 +18,7 @@ class CommandPaletteOverlay extends ConsumerStatefulWidget {
       _CommandPaletteOverlayState();
 }
 
-class _CommandPaletteOverlayState
-    extends ConsumerState<CommandPaletteOverlay> {
+class _CommandPaletteOverlayState extends ConsumerState<CommandPaletteOverlay> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
@@ -49,9 +45,7 @@ class _CommandPaletteOverlayState
 
         if (state.isOpen)
           Positioned.fill(
-            child: ColoredBox(
-              color: Colors.black.withValues(alpha: 0.15),
-            ),
+            child: ColoredBox(color: Colors.black.withValues(alpha: 0.15)),
           ),
 
         AnimatedPositioned(
@@ -75,63 +69,65 @@ class _CommandPaletteOverlayState
                     child: Shortcuts(
                       shortcuts: const {
                         SingleActivator(LogicalKeyboardKey.arrowDown):
-                        CommandPaletteNextIntent(),
+                            CommandPaletteNextIntent(),
                         SingleActivator(LogicalKeyboardKey.arrowUp):
-                        CommandPalettePreviousIntent(),
+                            CommandPalettePreviousIntent(),
                         SingleActivator(LogicalKeyboardKey.enter):
-                        CommandPaletteExecuteIntent(),
+                            CommandPaletteExecuteIntent(),
                       },
                       child: Actions(
                         actions: {
                           CommandPaletteNextIntent:
-                          CallbackAction<CommandPaletteNextIntent>(
-                            onInvoke: (_) {
-                              final controller = CommandListController(
-                                context: context,
-                                query: state.query,
-                              );
+                              CallbackAction<CommandPaletteNextIntent>(
+                                onInvoke: (_) {
+                                  final controller = CommandListController(
+                                    context: context,
+                                    ref: ref,
+                                    query: state.query,
+                                  );
 
-                              ref
-                                  .read(commandPaletteProvider.notifier)
-                                  .moveSelectionDown(
-                                controller.commands.length,
-                              );
+                                  ref
+                                      .read(commandPaletteProvider.notifier)
+                                      .moveSelectionDown(
+                                        controller.commands.length,
+                                      );
 
-                              return null;
-                            },
-                          ),
+                                  return null;
+                                },
+                              ),
 
                           CommandPalettePreviousIntent:
-                          CallbackAction<CommandPalettePreviousIntent>(
-                            onInvoke: (_) {
-                              ref
-                                  .read(commandPaletteProvider.notifier)
-                                  .moveSelectionUp();
+                              CallbackAction<CommandPalettePreviousIntent>(
+                                onInvoke: (_) {
+                                  ref
+                                      .read(commandPaletteProvider.notifier)
+                                      .moveSelectionUp();
 
-                              return null;
-                            },
-                          ),
+                                  return null;
+                                },
+                              ),
 
                           CommandPaletteExecuteIntent:
-                          CallbackAction<CommandPaletteExecuteIntent>(
-                            onInvoke: (_) async {
-                              final controller = CommandListController(
-                                context: context,
-                                query: state.query,
-                              );
+                              CallbackAction<CommandPaletteExecuteIntent>(
+                                onInvoke: (_) async {
+                                  final controller = CommandListController(
+                                    context: context,
+                                    ref: ref,
+                                    query: state.query,
+                                  );
 
-                              await controller.execute(
-                                context,
-                                state.selectedIndex,
-                              );
+                                  await controller.execute(
+                                    context,
+                                    state.selectedIndex,
+                                  );
 
-                              ref
-                                  .read(commandPaletteProvider.notifier)
-                                  .close();
+                                  ref
+                                      .read(commandPaletteProvider.notifier)
+                                      .close();
 
-                              return null;
-                            },
-                          ),
+                                  return null;
+                                },
+                              ),
                         },
                         child: Column(
                           children: [
@@ -145,9 +141,7 @@ class _CommandPaletteOverlayState
                                 focusNode: _focusNode,
                                 onChanged: (value) {
                                   ref
-                                      .read(
-                                    commandPaletteProvider.notifier,
-                                  )
+                                      .read(commandPaletteProvider.notifier)
                                       .updateQuery(value);
                                 },
                               ),
@@ -155,14 +149,12 @@ class _CommandPaletteOverlayState
 
                             Divider(
                               height: 1,
-                              color: Theme.of(context)
-                                  .dividerColor
-                                  .withValues(alpha: 0.2),
+                              color: Theme.of(
+                                context,
+                              ).dividerColor.withValues(alpha: 0.2),
                             ),
 
-                            const Expanded(
-                              child: CommandList(),
-                            ),
+                            const Expanded(child: CommandList()),
                           ],
                         ),
                       ),
