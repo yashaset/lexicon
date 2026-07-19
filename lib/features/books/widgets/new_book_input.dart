@@ -4,10 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/books_provider.dart';
 
 class NewBookInput extends ConsumerStatefulWidget {
-  const NewBookInput({
-    super.key,
-    required this.onFinished,
-  });
+  const NewBookInput({super.key, required this.onFinished});
 
   final VoidCallback onFinished;
 
@@ -55,11 +52,20 @@ class _NewBookInputState extends ConsumerState<NewBookInput> {
     return TextField(
       controller: _controller,
       focusNode: _focusNode,
+      autofocus: true,
+      style: Theme.of(
+        context,
+      ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
       decoration: const InputDecoration(
-        hintText: 'Book name...',
+        hintText: 'Untitled Book',
+        border: InputBorder.none,
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
       ),
       textInputAction: TextInputAction.done,
       onSubmitted: (_) => _save(),
+      onEditingComplete: _save,
+      onTapOutside: (_) => _save(),
     );
   }
 }

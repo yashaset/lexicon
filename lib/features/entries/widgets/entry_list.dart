@@ -6,9 +6,17 @@ import '../../../core/shortcuts/app_intents.dart';
 import '../providers/entries_provider.dart';
 import '../providers/filtered_entries_provider.dart';
 import 'entry_tile.dart';
+import 'new_entry_input.dart';
 
 class EntryList extends ConsumerStatefulWidget {
-  const EntryList({super.key});
+  const EntryList({
+    super.key,
+    required this.isCreatingEntry,
+    required this.onFinished,
+  });
+
+  final bool isCreatingEntry;
+  final VoidCallback onFinished;
 
   @override
   ConsumerState<EntryList> createState() => _EntryListState();
@@ -41,9 +49,7 @@ class _EntryListState extends ConsumerState<EntryList> {
             ),
             const SizedBox(height: 12),
             Text(
-              searchQuery.isEmpty
-                  ? 'No entries yet'
-                  : 'No matching entries',
+              searchQuery.isEmpty ? 'No entries yet' : 'No matching entries',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             if (searchQuery.isNotEmpty) ...[
@@ -62,10 +68,8 @@ class _EntryListState extends ConsumerState<EntryList> {
       autofocus: true,
       focusNode: _focusNode,
       shortcuts: const <ShortcutActivator, Intent>{
-        SingleActivator(LogicalKeyboardKey.arrowUp):
-        PreviousEntryIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown):
-        NextEntryIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowUp): PreviousEntryIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowDown): NextEntryIntent(),
       },
       actions: {
         NextEntryIntent: CallbackAction<NextEntryIntent>(
@@ -82,11 +86,18 @@ class _EntryListState extends ConsumerState<EntryList> {
         ),
       },
       child: ListView.builder(
-        itemCount: entries.length,
+        itemCount: entries.length + (widget.isCreatingEntry ? 1 : 0),
         itemBuilder: (_, index) {
-          return EntryTile(
-            entry: entries[index],
-          );
+          if (widget.isCreatingEntry && index == 0) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: NewEntryInput(onFinished: widget.onFinished),
+            );
+          }
+
+          final entry = entries[widget.isCreatingEntry ? index - 1 : index];
+
+          return EntryTile(entry: entry);
         },
       ),
     );

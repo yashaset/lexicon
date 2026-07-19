@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../command_palette/command_palette_controller.dart';
 
-class AppShortcuts extends ConsumerWidget {
-  const AppShortcuts({
+class GlobalKeyboardLayer extends ConsumerWidget {
+  const GlobalKeyboardLayer({
     super.key,
     required this.child,
   });
@@ -19,26 +19,13 @@ class AppShortcuts extends ConsumerWidget {
         SingleActivator(
           LogicalKeyboardKey.keyK,
           meta: true,
-        ): OpenCommandPaletteIntent(),
-
-        SingleActivator(
-          LogicalKeyboardKey.escape,
-        ): CloseCommandPaletteIntent(),
+        ): ActivateIntent(),
       },
       child: Actions(
         actions: {
-          OpenCommandPaletteIntent:
-          CallbackAction<OpenCommandPaletteIntent>(
+          ActivateIntent: CallbackAction<ActivateIntent>(
             onInvoke: (_) {
               ref.read(commandPaletteProvider.notifier).open();
-              return null;
-            },
-          ),
-
-          CloseCommandPaletteIntent:
-          CallbackAction<CloseCommandPaletteIntent>(
-            onInvoke: (_) {
-              ref.read(commandPaletteProvider.notifier).close();
               return null;
             },
           ),
@@ -50,12 +37,4 @@ class AppShortcuts extends ConsumerWidget {
       ),
     );
   }
-}
-
-class OpenCommandPaletteIntent extends Intent {
-  const OpenCommandPaletteIntent();
-}
-
-class CloseCommandPaletteIntent extends Intent {
-  const CloseCommandPaletteIntent();
 }

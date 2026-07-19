@@ -13,9 +13,7 @@ class LexiconApp extends StatelessWidget {
       title: 'Lexicon',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const AppShortcuts(
-        child: CommandPaletteOverlay(child: HomeScreen()),
-      ),
+      home: AppShortcuts(child: CommandPaletteOverlay(child: HomeScreen())),
     );
   }
 }

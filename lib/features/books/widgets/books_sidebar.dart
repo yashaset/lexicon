@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lexicon/features/books/widgets/new_book_input.dart';
 import 'package:lexicon/shared/widgets/section_title.dart';
 import '../../../shared/widgets/search_field.dart';
-import 'new_book_button.dart';
 import 'book_list.dart';
 
 class BooksSidebar extends StatefulWidget {
@@ -22,8 +20,31 @@ class _BooksSidebarState extends State<BooksSidebar> {
         children: [
           const SizedBox(height: 16),
 
-          const SectionTitle("Books"),
+          SectionTitle(
+            "Books",
 
+            trailing: IconButton(
+              onPressed: isCreatingBook
+                  ? null
+                  : () {
+                      setState(() {
+                        isCreatingBook = true;
+                      });
+                    },
+
+              icon: const Icon(Icons.add, size: 16),
+
+              tooltip: 'New Book',
+
+              visualDensity: VisualDensity.compact,
+
+              splashRadius: 16,
+
+              padding: EdgeInsets.zero,
+
+              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+            ),
+          ),
           const SizedBox(height: 16),
 
           const Padding(
@@ -33,65 +54,16 @@ class _BooksSidebarState extends State<BooksSidebar> {
 
           const SizedBox(height: 16),
 
-          const Expanded(child: BookList()),
+          Expanded(
+            child: BookList(
+              isCreatingBook: isCreatingBook,
 
-          // AnimatedSwitcher(
-          //   duration: const Duration(milliseconds: 180),
-          //   child: isCreatingBook
-          //       ? Padding(
-          //           key: const ValueKey('input'),
-          //           padding: const EdgeInsets.all(16),
-          //           child: NewBookInput(
-          //             onFinished: () {
-          //               setState(() {
-          //                 isCreatingBook = false;
-          //               });
-          //             },
-          //           ),
-          //         )
-          //       : Padding(
-          //           key: const ValueKey('button'),
-          //           padding: const EdgeInsets.all(16),
-          //           child: SizedBox(
-          //             width: double.infinity,
-          //             child: NewBookButton(),
-          //           ),
-          //         ),
-          // ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 180),
-
-            child: isCreatingBook
-                ? Padding(
-                    key: const ValueKey('input'),
-
-                    padding: const EdgeInsets.all(16),
-
-                    child: NewBookInput(
-                      onFinished: () {
-                        setState(() {
-                          isCreatingBook = false;
-                        });
-                      },
-                    ),
-                  )
-                : Padding(
-                    key: const ValueKey('button'),
-
-                    padding: const EdgeInsets.all(16),
-
-                    child: SizedBox(
-                      width: double.infinity,
-
-                      child: NewBookButton(
-                        onPressed: () {
-                          setState(() {
-                            isCreatingBook = true;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
+              onFinished: () {
+                setState(() {
+                  isCreatingBook = false;
+                });
+              },
+            ),
           ),
         ],
       ),

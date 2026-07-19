@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:lexicon/features/entries/widgets/entries_header.dart';
-
+import 'package:lexicon/shared/widgets/section_title.dart';
 import '../providers/entry_creation_provider.dart';
 import 'entry_list.dart';
-import 'new_entry_button.dart';
-import 'new_entry_input.dart';
 
 class EntriesPane extends ConsumerWidget {
   const EntriesPane({super.key});
@@ -17,37 +13,33 @@ class EntriesPane extends ConsumerWidget {
 
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(16),
-          child: Align(alignment: Alignment.centerLeft, child: EntriesHeader()),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SectionTitle(
+            "Entries",
+            trailing: IconButton(
+              onPressed: isCreatingEntry
+                  ? null
+                  : () {
+                      ref.read(entryCreationProvider.notifier).start();
+                    },
+              icon: const Icon(Icons.add, size: 16),
+              tooltip: "New Entry",
+              visualDensity: VisualDensity.compact,
+              splashRadius: 16,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+            ),
+          ),
         ),
 
-        const Expanded(child: EntryList()),
-
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 180),
-          child: isCreatingEntry
-              ? Padding(
-                  key: const ValueKey('input'),
-                  padding: const EdgeInsets.all(16),
-                  child: NewEntryInput(
-                    onFinished: () {
-                      ref.read(entryCreationProvider.notifier).finish();
-                    },
-                  ),
-                )
-              : Padding(
-                  key: const ValueKey('button'),
-                  padding: const EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: NewEntryButton(
-                      onPressed: () {
-                        ref.read(entryCreationProvider.notifier).start();
-                      },
-                    ),
-                  ),
-                ),
+        Expanded(
+          child: EntryList(
+            isCreatingEntry: isCreatingEntry,
+            onFinished: () {
+              ref.read(entryCreationProvider.notifier).finish();
+            },
+          ),
         ),
       ],
     );
