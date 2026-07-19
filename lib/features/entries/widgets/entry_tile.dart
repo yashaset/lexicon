@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/entry.dart';
 import '../providers/entries_provider.dart';
+import 'package:lexicon/core/constants/app_animation.dart';
+import 'package:lexicon/core/constants/app_radius.dart';
+import 'package:lexicon/core/constants/app_spacing.dart';
 
 class EntryTile extends ConsumerStatefulWidget {
   const EntryTile({super.key, required this.entry});
@@ -27,23 +30,29 @@ class _EntryTileState extends ConsumerState<EntryTile> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: 2,
+      ),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             onTap: () {
               ref.read(entriesProvider.notifier).selectEntry(widget.entry.id);
             },
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              curve: Curves.easeOut,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              duration: AppAnimation.normal,
+              curve: AppAnimation.curve,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: 10,
+              ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 color: isSelected
                     ? colorScheme.primaryContainer
                     : _isHovered
@@ -68,7 +77,7 @@ class _EntryTileState extends ConsumerState<EntryTile> {
                           ),
                         ),
 
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
 
                         Text(
                           (widget.entry.meaning?.isNotEmpty ?? false)

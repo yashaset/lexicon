@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lexicon/core/widgets/app_divider.dart';
+import 'package:lexicon/core/widgets/app_text_field.dart';
 import 'package:lexicon/features/entries/models/entry.dart';
 
 import '../../entries/providers/entries_provider.dart';
@@ -90,23 +92,20 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
+              AppTextField(
                 controller: _wordController,
                 focusNode: _wordFocusNode,
-                onChanged: (value) {
-                  notifier.updateWord(entry.id, value);
-                },
-                decoration: const InputDecoration(
-                  hintText: 'New Word',
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                autofocus: true,
+                hintText: 'Word',
+                textStyle: const TextStyle(
+                  fontSize: 28,
                   fontWeight: FontWeight.w700,
-                  height: 1.2,
                 ),
+                onChanged: (value) {
+                  ref
+                      .read(entriesProvider.notifier)
+                      .updateWord(entry.id, value);
+                },
               ),
 
               const SizedBox(height: 40),
@@ -187,11 +186,7 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
 
           const SizedBox(height: 16),
 
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: theme.dividerColor.withValues(alpha: 0.35),
-          ),
+          const AppDivider(),
         ],
       ),
     );

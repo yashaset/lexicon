@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lexicon/features/entries/widgets/entries_header.dart';
 import 'package:lexicon/features/entries/widgets/new_entry_input.dart';
-
-import '../../../shared/widgets/section_title.dart';
 import 'entry_list.dart';
 import 'new_entry_button.dart';
 
@@ -23,7 +22,7 @@ class _EntriesPaneState extends State<EntriesPane> {
           padding: EdgeInsets.all(16),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: SectionTitle('Entries'),
+            child:  EntriesHeader(),
           ),
         ),
 
