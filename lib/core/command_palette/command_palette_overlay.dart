@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'command_list_controller.dart';
 import 'command_palette_controller.dart';
-import 'widgets/command_palette_search_field.dart';
+import 'command_palette_intents.dart';
 import 'widgets/command_list.dart';
+import 'widgets/command_palette_search_field.dart';
 
 class CommandPaletteOverlay extends ConsumerStatefulWidget {
-  const CommandPaletteOverlay({super.key, required this.child});
+  const CommandPaletteOverlay({
+    super.key,
+    required this.child,
+  });
 
   final Widget child;
 
@@ -15,7 +21,8 @@ class CommandPaletteOverlay extends ConsumerStatefulWidget {
       _CommandPaletteOverlayState();
 }
 
-class _CommandPaletteOverlayState extends ConsumerState<CommandPaletteOverlay> {
+class _CommandPaletteOverlayState
+    extends ConsumerState<CommandPaletteOverlay> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
@@ -42,7 +49,9 @@ class _CommandPaletteOverlayState extends ConsumerState<CommandPaletteOverlay> {
 
         if (state.isOpen)
           Positioned.fill(
-            child: ColoredBox(color: Colors.black.withValues(alpha: 0.15)),
+            child: ColoredBox(
+              color: Colors.black.withValues(alpha: 0.15),
+            ),
           ),
 
         AnimatedPositioned(
@@ -63,33 +72,100 @@ class _CommandPaletteOverlayState extends ConsumerState<CommandPaletteOverlay> {
                   height: 420,
                   child: ColoredBox(
                     color: Theme.of(context).colorScheme.surface,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                          child: CommandPaletteSearchField(
-                            controller: _controller,
-                            focusNode: _focusNode,
-                            onChanged: (value) {
+                    child: Shortcuts(
+                      shortcuts: const {
+                        SingleActivator(LogicalKeyboardKey.arrowDown):
+                        CommandPaletteNextIntent(),
+                        SingleActivator(LogicalKeyboardKey.arrowUp):
+                        CommandPalettePreviousIntent(),
+                        SingleActivator(LogicalKeyboardKey.enter):
+                        CommandPaletteExecuteIntent(),
+                      },
+                      child: Actions(
+                        actions: {
+                          CommandPaletteNextIntent:
+                          CallbackAction<CommandPaletteNextIntent>(
+                            onInvoke: (_) {
+                              final controller = CommandListController(
+                                context: context,
+                                query: state.query,
+                              );
+
                               ref
                                   .read(commandPaletteProvider.notifier)
-                                  .updateQuery(value);
+                                  .moveSelectionDown(
+                                controller.commands.length,
+                              );
+
+                              return null;
                             },
                           ),
-                        ),
 
-                        Divider(
-                          height: 1,
-                          color: Theme.of(
-                            context,
-                          ).dividerColor.withValues(alpha: 0.2),
-                        ),
+                          CommandPalettePreviousIntent:
+                          CallbackAction<CommandPalettePreviousIntent>(
+                            onInvoke: (_) {
+                              ref
+                                  .read(commandPaletteProvider.notifier)
+                                  .moveSelectionUp();
 
-                        const Expanded(child: CommandList()),
-                      ],
+                              return null;
+                            },
+                          ),
+
+                          CommandPaletteExecuteIntent:
+                          CallbackAction<CommandPaletteExecuteIntent>(
+                            onInvoke: (_) async {
+                              final controller = CommandListController(
+                                context: context,
+                                query: state.query,
+                              );
+
+                              await controller.execute(
+                                context,
+                                state.selectedIndex,
+                              );
+
+                              ref
+                                  .read(commandPaletteProvider.notifier)
+                                  .close();
+
+                              return null;
+                            },
+                          ),
+                        },
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              child: CommandPaletteSearchField(
+                                controller: _controller,
+                                focusNode: _focusNode,
+                                onChanged: (value) {
+                                  ref
+                                      .read(
+                                    commandPaletteProvider.notifier,
+                                  )
+                                      .updateQuery(value);
+                                },
+                              ),
+                            ),
+
+                            Divider(
+                              height: 1,
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withValues(alpha: 0.2),
+                            ),
+
+                            const Expanded(
+                              child: CommandList(),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

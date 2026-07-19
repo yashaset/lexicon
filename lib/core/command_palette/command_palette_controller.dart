@@ -37,20 +37,6 @@ class CommandPaletteController extends Notifier<CommandPaletteState> {
   void updateQuery(String query) {
     state = state.copyWith(query: query, selectedIndex: 0);
   }
-
-  void selectNext(int max) {
-    if (max == 0) return;
-
-    state = state.copyWith(
-      selectedIndex: (state.selectedIndex + 1).clamp(0, max - 1),
-    );
-  }
-
-  void selectPrevious() {
-    state = state.copyWith(
-      selectedIndex: (state.selectedIndex - 1).clamp(0, 999),
-    );
-  }
 }
 
 final commandPaletteProvider =
