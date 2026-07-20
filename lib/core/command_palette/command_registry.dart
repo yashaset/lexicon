@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'command.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/books/providers/book_creation_provider.dart';
 import '../../features/entries/providers/new_entry_focus_provider.dart';
 import '../../features/entries/providers/entry_creation_provider.dart';
 
@@ -30,7 +31,7 @@ class CommandRegistry {
         subtitle: 'Create a new vocabulary book',
         icon: Icons.menu_book_rounded,
         action: (_) async {
-          debugPrint('New Book');
+          ref.read(bookCreationProvider.notifier).start();
         },
       ),
       Command(

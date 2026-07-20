@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:lexicon/shared/widgets/section_title.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/widgets/search_field.dart';
+import '../providers/book_creation_provider.dart';
 import 'book_list.dart';
 
-class BooksSidebar extends StatefulWidget {
+class BooksSidebar extends ConsumerWidget {
   const BooksSidebar({super.key});
 
   @override
-  State<BooksSidebar> createState() => _BooksSidebarState();
-}
-
-class _BooksSidebarState extends State<BooksSidebar> {
-  bool isCreatingBook = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final isCreatingBook = ref.watch(bookCreationProvider);
 
     return SafeArea(
       child: Column(
@@ -51,11 +46,7 @@ class _BooksSidebarState extends State<BooksSidebar> {
                 IconButton(
                   onPressed: isCreatingBook
                       ? null
-                      : () {
-                    setState(() {
-                      isCreatingBook = true;
-                    });
-                  },
+                      : () => ref.read(bookCreationProvider.notifier).start(),
                   icon: const Icon(Icons.add, size: 18),
                   splashRadius: 18,
                   tooltip: 'New Book',
@@ -78,11 +69,8 @@ class _BooksSidebarState extends State<BooksSidebar> {
           Expanded(
             child: BookList(
               isCreatingBook: isCreatingBook,
-              onFinished: () {
-                setState(() {
-                  isCreatingBook = false;
-                });
-              },
+              onFinished: () =>
+                  ref.read(bookCreationProvider.notifier).finish(),
             ),
           ),
         ],
