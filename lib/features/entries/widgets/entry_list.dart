@@ -24,10 +24,36 @@ class EntryList extends ConsumerStatefulWidget {
 
 class _EntryListState extends ConsumerState<EntryList> {
   final FocusNode _focusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void didUpdateWidget(covariant EntryList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Entry creation just started: the input is inserted at the top of the
+    // list, so scroll there to reveal it. Mounting it also triggers its
+    // built-in auto-focus.
+    if (!oldWidget.isCreatingEntry && widget.isCreatingEntry) {
+      _scrollToTop();
+    }
+  }
+
+  void _scrollToTop() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
+    });
+  }
 
   @override
   void dispose() {
     _focusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -86,6 +112,7 @@ class _EntryListState extends ConsumerState<EntryList> {
         ),
       },
       child: ListView.builder(
+        controller: _scrollController,
         itemCount: entries.length + (widget.isCreatingEntry ? 1 : 0),
         itemBuilder: (_, index) {
           if (widget.isCreatingEntry && index == 0) {

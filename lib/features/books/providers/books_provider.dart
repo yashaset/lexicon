@@ -37,6 +37,27 @@ class BooksNotifier extends Notifier<BooksState> {
     state = state.copyWith(selectedBookId: id);
   }
 
+  /// Reloads books (and their entry counts) without changing the current
+  /// selection. Call this after entries are added or removed so the sidebar
+  /// counts stay in sync.
+  Future<void> refresh() async {
+    final db = ref.read(databaseProvider);
+
+    final rows = await db.getBooks();
+
+    final books = rows
+        .map(
+          (b) => Book(
+            id: b.id.toString(),
+            title: b.title,
+            entryCount: b.entryCount,
+          ),
+        )
+        .toList();
+
+    state = state.copyWith(books: books);
+  }
+
   Future<void> addBook(String title) async {
     final db = ref.read(databaseProvider);
 
