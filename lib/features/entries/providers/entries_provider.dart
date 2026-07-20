@@ -58,12 +58,14 @@ class EntriesNotifier extends Notifier<EntriesState> {
 
   Future<void> addEntry({required String bookId, required String word}) async {
     final db = ref.read(databaseProvider);
-    print('bookId = $bookId');
+
     final id = await db.createEntry(bookId: int.parse(bookId), word: word);
-    print('inserted entry id = $id');
+
     await loadEntries(bookId);
-    print('entries after load = ${state.entries.length}');
+
     state = state.copyWith(selectedEntryId: id.toString());
+
+    await ref.read(booksProvider.notifier).refresh();
   }
 
   void selectEntry(String id) {
@@ -80,6 +82,8 @@ class EntriesNotifier extends Notifier<EntriesState> {
     if (bookId != null) {
       await loadEntries(bookId);
     }
+
+    await ref.read(booksProvider.notifier).refresh();
   }
 
   Future<void> updateWord(String id, String value) async {
