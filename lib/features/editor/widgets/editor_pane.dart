@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lexicon/core/widgets/app_divider.dart';
+import 'package:lexicon/app/theme/app_colors.dart';
 import 'package:lexicon/core/widgets/app_text_field.dart';
 import 'package:lexicon/features/entries/models/entry.dart';
 
@@ -66,6 +66,7 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
   Widget build(BuildContext context) {
     final entry = ref.watch(selectedEntryProvider);
     final notifier = ref.read(entriesProvider.notifier);
+    final theme = Theme.of(context);
 
     if (entry == null) {
       _currentEntryId = null;
@@ -77,21 +78,21 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
             Icon(
               Icons.menu_book_outlined,
               size: 56,
-              color: Theme.of(context).colorScheme.outline,
+              color: theme.colorScheme.outline,
             ),
             const SizedBox(height: 24),
             Text(
               'No word selected',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               'Choose a word from the list\nor press ⌘N to create one.',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.outline,
               ),
             ),
           ],
@@ -105,61 +106,71 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 48),
+      padding: const EdgeInsets.symmetric(horizontal: 72, vertical: 56),
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 620),
+          constraints: const BoxConstraints(maxWidth: 640),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Document title.
               AppTextField(
                 controller: _wordController,
                 focusNode: _wordFocusNode,
                 autofocus: true,
-                // hintText: 'Word',
-                textStyle: const TextStyle(
-                  fontSize: 30,
+                hintText: 'Untitled',
+                textStyle: theme.textTheme.headlineLarge?.copyWith(
+                  fontSize: 34,
                   fontWeight: FontWeight.w700,
+                  height: 1.1,
                 ),
-                onChanged: (value) {
-                  ref
-                      .read(entriesProvider.notifier)
-                      .updateWord(entry.id, value);
-                },
+                onChanged: (value) => notifier.updateWord(entry.id, value),
               ),
 
               const SizedBox(height: 40),
 
-              _buildField(
+              // Meaning reads as the document's lead paragraph.
+              _buildBlock(
                 label: 'Meaning',
                 controller: _meaningController,
-                maxLines: 4,
-                onChanged: (value) {
-                  notifier.updateMeaning(entry.id, value);
-                },
+                hint: 'What does it mean?',
+                textStyle: theme.textTheme.bodyLarge?.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  height: 1.6,
+                ),
+                onChanged: (value) => notifier.updateMeaning(entry.id, value),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 40),
 
-              _buildField(
+              // Example styled as a blockquote.
+              _buildBlock(
                 label: 'Example',
                 controller: _exampleController,
-                maxLines: 3,
-                onChanged: (value) {
-                  notifier.updateExample(entry.id, value);
-                },
+                hint: 'Use it in a sentence…',
+                blockquote: true,
+                textStyle: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.italic,
+                  height: 1.6,
+                  color: AppColors.textSecondary,
+                ),
+                onChanged: (value) => notifier.updateExample(entry.id, value),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 40),
 
-              _buildField(
+              // Notes flow as free-form body text.
+              _buildBlock(
                 label: 'Notes',
                 controller: _notesController,
-                maxLines: 8,
-                onChanged: (value) {
-                  notifier.updateNotes(entry.id, value);
-                },
+                hint: 'Anything worth remembering…',
+                textStyle: theme.textTheme.bodyMedium?.copyWith(
+                  height: 1.6,
+                ),
+                onChanged: (value) => notifier.updateNotes(entry.id, value),
               ),
             ],
           ),
@@ -168,48 +179,61 @@ class _EditorPaneState extends ConsumerState<EditorPane> {
     );
   }
 
-  Widget _buildField({
+  Widget _buildBlock({
     required String label,
     required TextEditingController controller,
     required ValueChanged<String> onChanged,
-    int maxLines = 1,
+    required String hint,
+    TextStyle? textStyle,
+    bool blockquote = false,
   }) {
     final theme = Theme.of(context);
+    final style = textStyle ?? theme.textTheme.bodyLarge;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.2,
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          TextField(
-            controller: controller,
-            onChanged: onChanged,
-            maxLines: maxLines,
-            decoration: const InputDecoration(
-              hintText: 'Start typing...',
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              contentPadding: EdgeInsets.zero,
-            ),
-            style: theme.textTheme.bodyLarge,
-          ),
-
-          const SizedBox(height: 16),
-
-          const AppDivider(),
-        ],
+    final field = TextField(
+      controller: controller,
+      onChanged: onChanged,
+      minLines: 1,
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      cursorColor: AppColors.accent,
+      style: style,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: style?.copyWith(color: theme.colorScheme.outline),
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        isCollapsed: true,
+        contentPadding: EdgeInsets.zero,
       ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Lightweight document heading — not a form label.
+        Text(
+          label,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        if (blockquote)
+          Container(
+            padding: const EdgeInsets.only(left: 18),
+            decoration: const BoxDecoration(
+              border: Border(
+                left: BorderSide(color: AppColors.accent, width: 3),
+              ),
+            ),
+            child: field,
+          )
+        else
+          field,
+      ],
     );
   }
 }
